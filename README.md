@@ -187,6 +187,36 @@
 2. Calculate collision probability for next event
 3. Success probability = 1 - collision probability
 
+### Multi-access Reservation Protocols (MARP)
+
+- MARP combines reservation and data transmission phases to improve channel utilization
+- **Operation**:
+  1. **Reservation Phase**: Stations contend for channel access using a MAC protocol
+  2. **Transmission Phase**: Station that successfully reserves the channel transmits data
+
+- **Throughput Calculation**:
+  - Two cases based on whether reservation frame carries message information:
+  
+  1. **Reservation frame used only for control information**:
+     - S = u / (u + v/Sr)
+     - u = data frame length in time units
+     - v = reservation frame length in time units
+     - Sr = MAC protocol utilization
+     
+  2. **Reservation frame carries message information**:
+     - S = (u + v) / (u + v/Sr)
+     - (u + v) = total message length in time units
+     
+- **Slotted Aloha in MARP**:
+  - Maximum utilization of Slotted Aloha is Sr,max = 1/e ≈ 0.368
+  - When using Slotted Aloha as the MAC protocol, substituting Sr = 1/e gives the maximum throughput
+
+(i) MAC 프로토콜의 이용률이 0.8인 경우 처리량:
+S = (u + v) / (u + v/Sr) = (990 + 10) / (990 + 10/0.8) = 1000 / (990 + 12.5) = 1000 / 1002.5 = 0.9975 = 99.75%
+
+(ii) Slotted Aloha의 경우 최대 처리량:
+S = (u + v) / (u + v/Sr) = (990 + 10) / (990 + 10/(1/e)) = 1000 / (990 + 10e) = 1000 / (990 + 27.18) = 1000 / 1017.18 = 0.9831 = 98.31% 
+
 ## 6. TCP Connection Management and Congestion Control
 
 ### TCP Connection Establishment (3-way Handshake)
