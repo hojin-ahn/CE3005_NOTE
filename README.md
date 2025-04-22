@@ -1,437 +1,437 @@
-# 컴퓨터 네트워크 핵심 개념 및 문제 해설
+# Computer Networks Core Concepts and Problem Explanations
 
-## 1. OSI 7-계층 모델 (OSI 7-Layer Model)
+## 1. OSI 7-Layer Model
 
-### 계층별 특징
-1. **물리 계층 (Physical Layer)**
-   - 비트 스트림(bit stream)을 전기적 신호로 변환
-   - 케이블(cable), 리피터(repeater), 허브(hub) 등의 장비
-   - 대역폭(bandwidth), 전압 레벨(voltage level), 물리적 연결 등을 담당
+### Layer Characteristics
+1. **Physical Layer**
+   - Converts bit streams into electrical signals
+   - Equipment includes cables, repeaters, hubs
+   - Responsible for bandwidth, voltage levels, physical connections
 
-2. **데이터 링크 계층 (Data Link Layer)**
-   - MAC 주소 기반 통신
-   - 프레임(frame) 단위의 데이터 처리
-   - 오류 감지(error detection) 및 흐름 제어(flow control)
-   - 스위치(switch), 브릿지(bridge)가 이 계층에서 작동
-   - 계산식: 최대 윈도우 크기(maximum window size) = 2^(시퀀스 비트 수)-1
+2. **Data Link Layer**
+   - MAC address-based communication
+   - Processes data in frame units
+   - Error detection and flow control (흐름 제어)
+   - Devices like switches and bridges operate at this layer
+   - Formula: Maximum window size = 2^(sequence bit count)-1
 
-3. **네트워크 계층 (Network Layer)**
-   - IP 주소 기반 라우팅(routing)
-   - 패킷(packet) 단위의 데이터 처리
-   - 라우터(router)가 이 계층에서 작동
-   - 서브넷팅(subnetting), 라우팅 프로토콜(routing protocol) 처리
+3. **Network Layer**
+   - IP address-based routing
+   - Processes data in packet units
+   - Routers operate at this layer
+   - Handles subnetting and routing protocols
 
-4. **전송 계층 (Transport Layer)**
-   - 종단 간(end-to-end) 통신 보장
-   - TCP(Transmission Control Protocol): 신뢰성 있는 연결 지향적 프로토콜
-   - UDP(User Datagram Protocol): 비연결성 프로토콜
-   - 포트 번호(port number)로 애플리케이션 구분
-   - 흐름 제어(flow control), 오류 복구(error recovery), 혼잡 제어(congestion control)
+4. **Transport Layer**
+   - Ensures end-to-end (종단 간) communication
+   - TCP: Reliable connection-oriented protocol
+   - UDP: Connectionless protocol
+   - Uses port numbers to distinguish applications
+   - Manages flow control, error recovery, and congestion control (혼잡 제어)
 
-5. **세션 계층 (Session Layer)**
-   - 통신 세션(session) 설정, 유지, 종료
-   - 전이중(full-duplex), 반이중(half-duplex) 통신 관리
-   - 동기화 지점(checkpoint) 관리
+5. **Session Layer**
+   - Establishes, maintains, and terminates communication sessions
+   - Manages full-duplex and half-duplex (반이중) communication
+   - Controls checkpoints (동기화 지점)
 
-6. **표현 계층 (Presentation Layer)**
-   - 데이터 형식 변환
-   - 암호화/복호화(encryption/decryption), 데이터 압축(data compression)
-   - 문자 인코딩 변환(ASCII, EBCDIC 등)
+6. **Presentation Layer**
+   - Transforms data formats
+   - Handles encryption/decryption and data compression
+   - Converts character encodings (ASCII, EBCDIC, etc.)
 
-7. **응용 계층 (Application Layer)**
-   - 사용자 인터페이스 제공
-   - HTTP, FTP, SMTP, DNS 등의 프로토콜
-   - 사용자 데이터 처리
+7. **Application Layer**
+   - Provides user interfaces
+   - Protocols include HTTP, FTP, SMTP, DNS
+   - Processes user data
 
-### TCP/IP 모델과 비교
-- **응용 계층(Application Layer)**: OSI의 5-7계층 통합 (Application, Session, Presentation)
-- **전송 계층(Transport Layer)**: OSI의 4계층과 동일 (Transport)
-- **인터넷 계층(Internet Layer)**: OSI의 3계층과 동일 (Network)
-- **네트워크 인터페이스 계층(Network Interface Layer)**: OSI의 1-2계층 통합 (Physical, Data Link)
+### Comparison with TCP/IP Model
+- **Application Layer**: Combines OSI layers 5-7
+- **Transport Layer**: Same as OSI layer 4
+- **Internet Layer**: Same as OSI layer 3
+- **Network Interface Layer**: Combines OSI layers 1-2
 
-## 2. 데이터 전송 및 윈도우 크기 (Data Transmission & Window Size)
+## 2. Data Transmission and Window Size
 
-### 핵심 개념
-- **전송 시간(Transmission time, Tx)**: 데이터 크기 / 대역폭
-  - 계산식: Tx = 패킷 크기(bits) / 대역폭(bps)
+### Key Concepts
+- **Transmission time (Tx)**: Data size / Bandwidth
+  - Formula: Tx = Packet size (bits) / Bandwidth (bps)
 
-- **전파 지연(Propagation delay, Tp)**: 거리 / 전파 속도
-  - 계산식: Tp = 거리(m) / 전파 속도(m/s)
-  - 일반적으로 광섬유에서는 2 × 10^8 m/s (빛의 속도의 2/3)
-  - 계산식: 1μs/100m의 비율로 계산
+- **Propagation delay (Tp)**: Distance / Propagation speed
+  - Formula: Tp = Distance (m) / Propagation speed (m/s)
+  - Typically 2 × 10^8 m/s in fiber optics (2/3 of light speed)
+  - Rule of thumb: 1μs/100m
 
-- **정규화된 전파 지연(Normalized propagation delay, a)**: 
-  - 계산식: a = 전파 지연 시간 / 전송 시간 = Tp / Tx
+- **Normalized propagation delay (a)**: 
+  - Formula: a = Propagation delay / Transmission time = Tp / Tx
 
-- **링크 활용도(Link utilization, U)**: 
-  - 계산식: U = W / (1 + 2a), W는 윈도우 크기(window size)
+- **Link utilization (U)**: 
+  - Formula: U = W / (1 + 2a), where W is window size
 
-- **최소 윈도우 크기 계산(Minimum window size)**:
-  - 계산식: W ≥ 1 + 2a
-  - 특정 활용도(U)를 위한 윈도우 크기: W = U(1 + 2a)
-  - 시퀀스 번호 필드 크기(sequence number field size): 2^k ≥ W + 1 (k는 비트 수)
+- **Minimum window size calculation**:
+  - Formula: W ≥ 1 + 2a
+  - For specific utilization (U): W = U(1 + 2a)
+  - Sequence number field size: 2^k ≥ W + 1 (k is bit count)
 
-### 프레임 시퀀싱 및 슬라이딩 윈도우 (Frame Sequencing & Sliding Window)
-- **시퀀스 번호(Sequence Number)**: 데이터 패킷의 순서를 추적하기 위한 번호
-- **확인 번호(Acknowledgement Number)**: 수신 측에서 다음에 기대하는 시퀀스 번호
+### Frame Sequencing and Sliding Window
+- **Sequence Number**: Tracks the order of data packets
+- **Acknowledgement Number**: Next sequence number expected by the receiver
 
-#### 고-백-N (Go-Back-N) 프로토콜
-- 송신 윈도우 크기 > 1, 수신 윈도우 크기 = 1
-- 오류 발생 시, 해당 프레임부터 모든 프레임 재전송
-- 순서에 맞지 않은 프레임은 버림
+#### Go-Back-N Protocol
+- Sender window size > 1, Receiver window size = 1
+- When errors occur, retransmits all frames from the error point
+- Discards out-of-order frames
 
-#### 선택적 재전송 (Selective Repeat/Reject) 프로토콜
-- 송신 윈도우 크기 > 1, 수신 윈도우 크기 > 1
-- 오류 발생한 프레임만 선택적으로 재전송
-- 순서에 맞지 않은 프레임도 버퍼에 저장
+#### Selective Repeat/Reject Protocol
+- Sender window size > 1, Receiver window size > 1
+- Only retransmits frames with errors
+- Buffers out-of-order frames
 
-#### 슬라이딩 윈도우 동작
-1. **발신자 동작**:
-   - 윈도우 내 모든 프레임 전송 가능
-   - ACK 수신 시 윈도우 앞으로 이동
-   - 타임아웃 발생 시 재전송 시작
+#### Sliding Window Operation
+1. **Sender behavior**:
+   - Can transmit all frames within the window
+   - Moves window forward upon receiving ACK
+   - Begins retransmission when timeout occurs
 
-2. **수신자 동작**:
-   - 올바른 시퀀스 번호 수신 시 ACK 전송
-   - 고-백-N: 순서대로만 프레임 수락
-   - 선택적 재전송: 순서에 맞지 않아도 일단 버퍼링
+2. **Receiver behavior**:
+   - Sends ACK when receiving correct sequence number
+   - Go-Back-N: Only accepts in-order frames
+   - Selective Repeat: Buffers out-of-order frames
 
-3. **프레임 시퀀스 번호 결정**:
-   - 필요한 비트 수 = log₂(윈도우 크기 × 2)
-   - 최대 시퀀스 번호 = 2^(비트 수) - 1
+3. **Frame sequence number determination**:
+   - Required bit count = log₂(Window size × 2)
+   - Maximum sequence number = 2^(bit count) - 1
 
-### 문제 해결 방법
-1. 전송 시간(Tx) 계산: 패킷 크기 / 대역폭
-2. 전파 지연(Tp) 계산: 거리 × 전파 지연 상수(보통 3ms/km 또는 1μs/100m)
-3. a = Tp / Tx 계산
-4. 최소 윈도우 크기 W = 1 + 2a 계산
-5. 필요한 시퀀스 비트 수 k: 2^(k-1) ≥ W
+### Problem Solving Method
+1. Calculate transmission time (Tx): Packet size / Bandwidth
+2. Calculate propagation delay (Tp): Distance × Propagation delay constant
+3. Calculate a = Tp / Tx
+4. Calculate minimum window size W = 1 + 2a
+5. Determine required sequence bit count k: 2^(k-1) ≥ W
 
-## 3. 신뢰성 및 네트워크 복원력 (Reliability & Network Resilience)
+## 3. Reliability and Network Resilience
 
-### 신뢰성 계산
-- **신뢰성(Reliability, r)**: 네트워크 가용 시간 비율 (예: 99.9999%)
-- **고장 확률(Failure probability, b)**: 1 - r (예: 1 - 0.999999 = 10^-6)
-- **연간 허용 다운타임(Annual downtime)**:
-  - 계산식: T = 365일 × 24시간/일 × 60분/시간 × 60초/분 × 고장확률
-  - 99.9999% 신뢰성(6-9's): 31.5초/년 다운타임
+### Reliability Calculation
+- **Reliability (r)**: Network availability percentage (e.g., 99.9999%)
+- **Failure probability (b)**: 1 - r (e.g., 1 - 0.999999 = 10^-6)
+- **Annual downtime**:
+  - Formula: T = 365 days × 24 hours/day × 60 minutes/hour × 60 seconds/minute × failure probability
+  - 99.9999% reliability (6-9's): 31.5 seconds/year downtime
 
-### 네트워크 복원력 계산
-- **직렬 연결(Serial connection)**: 모든 링크가 작동해야 통신 가능
-  - 계산식: r_total = r1 × r2 × ... × rn
-  - 계산식: b_total = 1 - r_total
+### Network Resilience Calculation
+- **Serial connection**: All links must be operational for communication
+  - Formula: r_total = r1 × r2 × ... × rn
+  - Formula: b_total = 1 - r_total
 
-- **병렬 연결(Parallel connection)**: 하나의 링크만 작동해도 통신 가능
-  - 계산식: b_total = b1 × b2 × ... × bn
-  - 계산식: r_total = 1 - b_total
+- **Parallel connection**: Only one link needs to be operational
+  - Formula: b_total = b1 × b2 × ... × bn
+  - Formula: r_total = 1 - b_total
 
-- **복합 연결(Complex connection)**: 
-  1. 각 경로의 신뢰성 계산
-  2. 병렬 연결에 대한 전체 고장 확률 계산
+- **Complex connection**: 
+  1. Calculate reliability of each path
+  2. Calculate total failure probability for parallel connections
 
-## 4. ARQ (Automatic Repeat reQuest) 프로토콜
+## 4. ARQ (Automatic Repeat reQuest) Protocols
 
 ### Selective-Reject ARQ
-- 오류가 발생한 프레임만 재전송
-- 활용도(Utilization, U) 계산:
-  - 계산식: U = W(1-P) / (1 + 2a)
-  - W: 윈도우 크기(window size)
-  - P: 프레임 오류 확률(frame error probability)
-  - a: 정규화된 전파 지연(normalized propagation delay)
+- Only retransmits frames with errors
+- Utilization (U) calculation:
+  - Formula: U = W(1-P) / (1 + 2a)
+  - W: Window size
+  - P: Frame error probability
+  - a: Normalized propagation delay
 
 ### Stop-and-Wait ARQ
-- 전송 후 확인(ACK) 수신까지 대기
-- 활용도(Utilization, U) 계산:
-  - 계산식: U = (1-P) / (1 + 2a)
+- Waits for acknowledgment (ACK) after transmission
+- Utilization (U) calculation:
+  - Formula: U = (1-P) / (1 + 2a)
 
 ### Go-Back-N ARQ
-- 오류 발생 시 해당 프레임 이후 모든 프레임 재전송
-- 활용도(Utilization, U) 계산:
-  - 계산식: U = (1-P) / (1 + 2aP)
+- Retransmits all frames from the error point
+- Utilization (U) calculation:
+  - Formula: U = (1-P) / (1 + 2aP)
 
-## 5. CSMA/CD와 이진 지수 백오프 (CSMA/CD & Binary Exponential Backoff)
+## 5. CSMA/CD and Binary Exponential Backoff
 
-### CSMA/CD (Carrier Sense Multiple Access with Collision Detection) 메커니즘
-- 충돌 감지 시 전송 중단, 백오프 알고리즘으로 재시도
-- 최대 충돌 시도 횟수: 16회 (일반적인 Ethernet)
+### CSMA/CD (Carrier Sense Multiple Access with Collision Detection) Mechanism
+- Stops transmission when collision is detected, retries using backoff algorithm
+- Maximum collision attempts: 16 (typical Ethernet)
 
-### CSMA/CD 최소 프레임 크기 (Minimum Frame Size)
-- CSMA/CD가 제대로 작동하려면 프레임 전송 시간이 왕복 전파 지연보다 커야 함
-- 최소 프레임 크기(시간) = 2 × 종단간 신호 전파 시간
-- 종단간 신호 전파 시간 = (세그먼트 지연 × 세그먼트 수) + (리피터 지연 × 리피터 수)
-- 최소 프레임 크기(비트) = 최소 프레임 크기(시간) × 대역폭(bps)
-- 이더넷 표준 최소 프레임 크기: 64바이트(512비트)
+### CSMA/CD Minimum Frame Size
+- CSMA/CD requires frame transmission time to exceed round-trip propagation delay
+- Minimum frame size (time) = 2 × end-to-end signal propagation time
+- End-to-end signal propagation time = (Segment delay × Segment count) + (Repeater delay × Repeater count)
+- Minimum frame size (bits) = Minimum frame size (time) × Bandwidth (bps)
+- Ethernet standard minimum frame size: 64 bytes (512 bits)
 
-### 이진 지수 백오프 (Binary Exponential Backoff, BEB)
-- 충돌 후 랜덤 시간(slot) 대기
-- 대기 슬롯 범위: 0 ~ (2^k - 1) (k는 충돌 횟수, 최대 10)
-- 충돌 확률 계산:
-  - n개 스테이션이 모두 같은 슬롯 선택 확률: (1/2^k)^(n-1)
-  - 적어도 하나의 스테이션이 다른 슬롯 선택 확률: 1 - (1/2^k)^(n-1)
+### Binary Exponential Backoff (BEB)
+- Waits random time slots after collision
+- Slot range: 0 ~ (2^k - 1) (k is collision count, maximum 10)
+- Collision probability calculation:
+  - Probability all n stations select the same slot: (1/2^k)^(n-1)
+  - Probability at least one station selects a different slot: 1 - (1/2^k)^(n-1)
 
-### Aloha 프로토콜 (Aloha Protocols)
-- 채널 접근을 위한 간단한 MAC 프로토콜.
+### Aloha Protocols
+- Simple MAC protocol for channel access
 - **Pure Aloha**:
-  - 전송할 데이터가 있으면 즉시 전송.
-  - 충돌 발생 시 랜덤 시간 후 재전송.
-  - 처리율(Throughput, S) = G * e^(-2G), G는 시도 횟수(offered load).
-  - 최대 처리율(Max Throughput) = 1/(2e) ≈ 0.184 (G=0.5 일 때).
+  - Transmits immediately when data is available
+  - Retransmits after random time when collision occurs
+  - Throughput (S) = G * e^(-2G), where G is offered load
+  - Maximum Throughput = 1/(2e) ≈ 0.184 (at G=0.5)
 - **Slotted Aloha**:
-  - 시간을 슬롯(slot)으로 나누고, 슬롯 시작 시점에만 전송 가능.
-  - 충돌 가능성 감소.
-  - 처리율(Throughput, S) = G * e^(-G).
-  - 최대 처리율(Max Throughput) = 1/e ≈ 0.368 (G=1.0 일 때).
+  - Divides time into slots, transmits only at slot beginnings
+  - Reduces collision possibility
+  - Throughput (S) = G * e^(-G)
+  - Maximum Throughput = 1/e ≈ 0.368 (at G=1.0)
 
-### 문제 해결 방법
-1. 충돌 발생 확률 계산
-2. 다음 이벤트에서 충돌 확률 계산 (모든 가능한 슬롯 선택 조합 고려)
-3. 성공 확률 = 1 - 충돌 확률
+### Problem Solving Method
+1. Calculate collision probability
+2. Calculate collision probability for next event
+3. Success probability = 1 - collision probability
 
-## 6. TCP 연결 관리 및 혼잡 제어 (TCP Connection Management & Congestion Control)
+## 6. TCP Connection Management and Congestion Control
 
-### TCP 연결 설정 (TCP Connection Establishment, 3-way Handshake)
-1. 클라이언트 → 서버: SYN(SEQ=x)
-2. 서버 → 클라이언트: SYN-ACK(SEQ=y, ACK=x+1)
-3. 클라이언트 → 서버: ACK(SEQ=x+1, ACK=y+1)
+### TCP Connection Establishment (3-way Handshake)
+1. Client → Server: SYN(SEQ=x)
+2. Server → Client: SYN-ACK(SEQ=y, ACK=x+1)
+3. Client → Server: ACK(SEQ=x+1, ACK=y+1)
 
-### TCP 연결 종료 (TCP Connection Termination, 4-way Handshake)
-1. 클라이언트 → 서버: FIN(SEQ=x)
-2. 서버 → 클라이언트: ACK(SEQ=y, ACK=x+1)
-3. 서버 → 클라이언트: FIN(SEQ=y)
-4. 클라이언트 → 서버: ACK(SEQ=x+1, ACK=y+1)
+### TCP Connection Termination (4-way Handshake)
+1. Client → Server: FIN(SEQ=x)
+2. Server → Client: ACK(SEQ=y, ACK=x+1)
+3. Server → Client: FIN(SEQ=y)
+4. Client → Server: ACK(SEQ=x+1, ACK=y+1)
 
-### TCP 헤더 구조 (TCP Header Structure)
-- 헤더 크기: 20-60바이트
-- 주요 필드: 소스/목적지 포트(source/destination port), 시퀀스 번호(sequence number), 확인 번호(acknowledgment number), 윈도우 크기(window size) 등
-- 플래그: SYN, ACK, FIN, RST, PSH, URG
+### TCP Header Structure
+- Header size: 20-60 bytes
+- Key fields: source/destination ports, sequence number, acknowledgment number, window size
+- Flags: SYN, ACK, FIN, RST, PSH, URG
 
-### TCP 흐름 제어 및 혼잡 제어 (TCP Flow Control & Congestion Control)
-1. **슬로우 스타트(Slow Start)**
-   - 초기 cwnd = 1 MSS (Maximum Segment Size)
-   - 매 RTT(Round Trip Time)마다 cwnd 2배 증가
-   - 임계값(ssthresh, slow start threshold)에 도달할 때까지 지수적 증가
+### TCP Flow Control and Congestion Control
+1. **Slow Start**
+   - Initial cwnd = 1 MSS (Maximum Segment Size)
+   - cwnd doubles every RTT (Round Trip Time)
+   - Exponential increase until reaching threshold (ssthresh)
 
-2. **혼잡 회피(Congestion Avoidance)**
-   - cwnd ≥ ssthresh일 때 작동
-   - 매 RTT마다 cwnd를 1 MSS씩 증가 (선형 증가)
+2. **Congestion Avoidance**
+   - Activates when cwnd ≥ ssthresh
+   - Increases cwnd by 1 MSS per RTT (linear increase)
 
-3. **빠른 재전송(Fast Retransmit)**
-   - 3개의 중복 ACK 수신 시 즉시 재전송
-   - 타임아웃 대기 없이 손실 감지
+3. **Fast Retransmit**
+   - Immediate retransmission upon receiving 3 duplicate ACKs
+   - Detects loss without timeout waiting
 
-4. **빠른 회복(Fast Recovery)**
-   - 중복 ACK 수신 후 cwnd = ssthresh + 3
-   - 추가 중복 ACK마다 cwnd 1 증가
-   - 새로운 ACK 수신 시 cwnd = ssthresh
+4. **Fast Recovery**
+   - Sets cwnd = ssthresh + 3 after duplicate ACKs
+   - Increases cwnd by 1 for each additional duplicate ACK
+   - Sets cwnd = ssthresh when receiving new ACK
 
-### TCP 처리율(Throughput) 계산
-- **RTT 제한 처리율(RTT-limited throughput)**: 
-  - 계산식: Throughput = cwnd / RTT
-  - cwnd = min(받는 측 윈도우, 혼잡 윈도우)
+### TCP Throughput Calculation
+- **RTT-limited throughput**: 
+  - Formula: Throughput = cwnd / RTT
+  - cwnd = min(receiver window, congestion window)
   
-- **대역폭 제한 처리율(Bandwidth-limited throughput)**:
-  - 계산식: Throughput = 대역폭 × (1 - 패킷 손실률)
+- **Bandwidth-limited throughput**:
+  - Formula: Throughput = Bandwidth × (1 - Packet loss rate)
 
-## 7. IP 주소 지정 및 서브넷팅 (IP Addressing & Subnetting)
+## 7. IP Addressing and Subnetting
 
-### IPv4 주소 체계 (IPv4 Address Structure)
-- 32비트 주소 (4개의 8비트 옥텟, 점으로 구분)
-- 클래스(Class):
-  - A 클래스(Class A): 0.0.0.0 - 127.255.255.255 (/8)
-  - B 클래스(Class B): 128.0.0.0 - 191.255.255.255 (/16)
-  - C 클래스(Class C): 192.0.0.0 - 223.255.255.255 (/24)
+### IPv4 Address Structure
+- 32-bit address (4 octets of 8 bits each, separated by dots)
+- Classes:
+  - Class A: 0.0.0.0 - 127.255.255.255 (/8)
+  - Class B: 128.0.0.0 - 191.255.255.255 (/16)
+  - Class C: 192.0.0.0 - 223.255.255.255 (/24)
 
-### IPv6 주소 체계 (IPv6 Address Structure)
-- 128비트 주소, 일반적으로 16진수 8개 그룹으로 표시.
-- IPv4보다 훨씬 큰 주소 공간 제공.
+### IPv6 Address Structure
+- 128-bit address, typically shown as 8 groups of hexadecimal digits
+- Provides much larger address space than IPv4
 
-### 서브넷 마스크 (Subnet Mask)
-- 네트워크 부분과 호스트 부분 구분
-- CIDR(Classless Inter-Domain Routing) 표기법: /n (n은 네트워크 비트 수)
-- 계산식: 사용 가능한 호스트 수 = 2^(32-n) - 2
+### Subnet Mask
+- Separates network portion from host portion
+- CIDR notation: /n (n is network bit count)
+- Formula: Available host count = 2^(32-n) - 2
 
-### 서브넷 계산 (Subnet Calculation)
-1. 서브넷 수: 2^(추가 네트워크 비트 수)
-2. 각 서브넷의 호스트 수: 2^(호스트 비트 수) - 2
-3. 네트워크 주소(Network address): 호스트 비트가 모두 0
-4. 브로드캐스트 주소(Broadcast address): 호스트 비트가 모두 1
+### Subnet Calculation
+1. Subnet count: 2^(additional network bits)
+2. Hosts per subnet: 2^(host bits) - 2
+3. Network address: All host bits set to 0
+4. Broadcast address: All host bits set to 1
 
-### 가변 길이 서브넷 마스크 (Variable Length Subnet Masking, VLSM)
-- 네트워크 요구사항에 따라 서로 다른 크기의 서브넷 마스크를 사용하여 IP 주소를 효율적으로 할당하는 기법.
-- IP 주소 낭비를 줄일 수 있음.
+### Variable Length Subnet Masking (VLSM)
+- Uses different subnet mask sizes based on network requirements
+- Reduces IP address waste
 
-### 문제 해결 방법
-1. 요구 사항 분석 (필요한 서브넷 수, 호스트 수)
-2. 서브넷팅 비트 수 결정
-3. 각 서브넷의 네트워크 주소, 범위, 브로드캐스트 주소 계산
+### Problem Solving Method
+1. Analyze requirements (needed subnet count, host count)
+2. Determine subnet bit count
+3. Calculate network address, range, and broadcast address for each subnet
 
-## 8. 패킷 스위칭 및 네트워크 지연 (Packet Switching & Network Delay)
+## 8. Packet Switching and Network Delay
 
-### 패킷 스위칭 유형 (Packet Switching Types)
-- **다트그램(Datagram)**: 각 패킷이 독립적으로 라우팅
-- **가상 회선(Virtual Circuit)**: 모든 패킷이 동일한 경로 사용
+### Packet Switching Types
+- **Datagram**: Each packet is routed independently
+- **Virtual Circuit**: All packets use the same path
 
-### 지연 유형 (Delay Types)
-1. **처리 지연(Processing Delay)**: 패킷 헤더 처리 시간
-2. **큐잉 지연(Queuing Delay)**: 출력 링크에서 대기 시간
-3. **전송 지연(Transmission Delay)**: 패킷을 링크에 푸시하는 시간 (L/R)
-4. **전파 지연(Propagation Delay)**: 링크를 통해 이동하는 시간 (d/s)
+### Delay Types
+1. **Processing Delay**: Time to process packet headers
+2. **Queuing Delay**: Waiting time in output link queue
+3. **Transmission Delay**: Time to push packet onto link (L/R)
+4. **Propagation Delay**: Time for signal to travel through the link (d/s)
 
-### 총 지연 계산 (Total Delay Calculation)
-- **스토어-앤-포워드 지연(Store-and-Forward Delay)**:
-  - 계산식: 총 지연 = 홉 수 × (Tx + Tp) + (패킷 수 - 1) × Tx
-  - 파이프라인 효과(pipelining effect)로 인해 추가 패킷의 지연은 전송 시간(Tx)만큼만 증가
+### Total Delay Calculation
+- **Store-and-Forward Delay**:
+  - Formula: Total delay = Hop count × (Tx + Tp) + (Packet count - 1) × Tx
+  - Additional packets increase delay only by transmission time (pipelining effect)
 
-### 패킷 스위치 네트워크 전송 시간 계산 (Transmission Time Calculation in Packet Switched Networks)
-- **메시지 크기 M, 패킷 수 N, 패킷 크기 L (= M/N), 헤더 크기 h, 대역폭 B, 홉 수 H인 경우**:
+### Packet Switched Network Transmission Time Calculation
+- **For message size M, packet count N, packet size L (= M/N), header size h, bandwidth B, hop count H**:
   
-1. **총 전송 데이터**: (L+h) × N 비트
-2. **패킷당 전송 시간**: (L+h)/B 초
-3. **저장-전달(Store-and-Forward) 지연**:
-   - 첫 패킷의 종단간 지연: H × (L+h)/B
-   - 이후 패킷들의 추가 지연: (L+h)/B (파이프라인 효과)
-4. **총 종단간 전송 시간**: H × (L+h)/B + (N-1) × (L+h)/B = (H+N-1) × (L+h)/B
+1. **Total transmitted data**: (L+h) × N bits
+2. **Transmission time per packet**: (L+h)/B seconds
+3. **Store-and-Forward delay**:
+   - End-to-end delay for first packet: H × (L+h)/B
+   - Additional delay for subsequent packets: (L+h)/B (pipelining effect)
+4. **Total end-to-end transmission time**: H × (L+h)/B + (N-1) × (L+h)/B = (H+N-1) × (L+h)/B
 
-### 최적 패킷 크기 (Optimal Packet Size)
-- 메시지를 여러 패킷으로 나누어 전송할 때, 전체 전송 지연을 최소화하는 패킷 크기가 존재.
-- 스토어-앤-포워드 네트워크에서 총 지연(Total Delay) = (홉 수 + N - 1) * Tx (전파 지연 0 가정).
-- Tx = (P + H) / R, N = 파일 크기 / P.
-- Delay = (홉 수 + (파일 크기 / P) - 1) * (P + H) / R
-- 미분을 통해 최적 페이로드 크기(P)를 찾을 수 있음 (일반적으로 P = sqrt(파일 크기 * 헤더 크기 / (홉 수 - 1)) 형태).
+### Optimal Packet Size
+- When sending a message in multiple packets, there's an optimal packet size that minimizes total transmission delay
+- In store-and-forward networks, Total Delay = (Hop count + N - 1) * Tx (assuming zero propagation delay)
+- Tx = (P + H) / R, N = File size / P
+- Delay = (Hop count + (File size / P) - 1) * (P + H) / R
+- Optimal payload size can be found through differentiation (generally in the form P = sqrt(File size * Header size / (Hop count - 1)))
 
-- **오류가 없는 환경에서 최적 패킷 크기**:
-  - 패킷 크기가 클수록 효율적 (헤더 오버헤드 감소)
+- **Optimal packet size in error-free environment**:
+  - Larger packet sizes are more efficient (reduced header overhead)
   
-- **오류가 있는 환경에서 최적 패킷 크기**:
-  - 계산식: 최적 패킷 크기 = √((2 × 메시지 크기 × 헤더 크기) / (오류율 × 홉 수))
-  - 미분 방정식을 통해 총 지연을 최소화하는 크기 계산:
+- **Optimal packet size in error-prone environment**:
+  - Formula: Optimal packet size = √((2 × Message size × Header size) / (Error rate × Hop count))
+  - Using differential equations to minimize total delay:
     ```
-    총 지연 = (N+H-1) × 패킷 전송 시간
-            = (N+H-1) × (L+h)/B
-            = (M/L + H - 1) × (L+h)/B
+    Total delay = (N+H-1) × Packet transmission time
+               = (N+H-1) × (L+h)/B
+               = (M/L + H - 1) × (L+h)/B
     ```
   
-- **실제 최적화 과정**:
-  1. 위 총 지연 식을 L에 대해 미분하여 0으로 설정
-  2. 최적 페이로드 크기(L) 계산: L = √(h × M/(H-1))
-  3. L이 최소값(헤더 크기 이상)과 최대값(MTU 이하) 사이인지 확인
+- **Optimization process**:
+  1. Differentiate the total delay equation with respect to L and set to zero
+  2. Calculate optimal payload size (L): L = √(h × M/(H-1))
+  3. Verify L is between minimum (≥ header size) and maximum (≤ MTU)
 
-### 회선 스위칭 vs 패킷 스위칭 (Circuit Switching vs Packet Switching)
-- **회선 스위칭(Circuit Switching)**: 
-  - 전용 경로 설정
-  - 지연 = 설정 시간 + 전송 시간 + 전파 지연
+### Circuit Switching vs Packet Switching
+- **Circuit Switching**: 
+  - Dedicated path setup
+  - Delay = Setup time + Transmission time + Propagation delay
   
-- **패킷 스위칭(Packet Switching)**: 
-  - 자원 공유, 통계적 다중화(statistical multiplexing)
-  - 지연 = 처리 + 큐잉 + 전송 + 전파 지연
+- **Packet Switching**: 
+  - Resource sharing, statistical multiplexing
+  - Delay = Processing + Queuing + Transmission + Propagation delays
 
-### 패킷 스위칭이 유리한 조건
-- 계산식: (k-1) × p/b < s
-  - k: 홉 수(hop count)
-  - p: 패킷 크기(packet size)
-  - b: 대역폭(bandwidth)
-  - s: 회선 설정 시간(circuit setup time)
+### When Packet Switching is Advantageous
+- Formula: (k-1) × p/b < s
+  - k: Hop count
+  - p: Packet size
+  - b: Bandwidth
+  - s: Circuit setup time
 
-## 9. 라우팅 프로토콜 및 알고리즘 (Routing Protocols & Algorithms)
+## 9. Routing Protocols and Algorithms
 
-### 다익스트라 알고리즘 (Dijkstra's Algorithm, Link State Routing)
-1. 출발 노드 설정, 거리 테이블 초기화
-2. 모든 인접 노드까지의 거리 계산
-3. 방문하지 않은 노드 중 최소 거리 노드 선택
-4. 선택한 노드를 통한 다른 노드까지의 거리 갱신
-5. 모든 노드 방문할 때까지 반복
+### Dijkstra's Algorithm (Link State Routing)
+1. Set starting node, initialize distance table
+2. Calculate distances to all adjacent nodes
+3. Select unvisited node with minimum distance
+4. Update distances to other nodes through selected node
+5. Repeat until all nodes are visited
 
-### 벨만-포드 알고리즘 (Bellman-Ford Algorithm, Distance Vector Routing)
-- 각 노드가 이웃 노드로부터 거리 정보 수신
-- 새로운 경로 발견 시 라우팅 테이블 갱신
-- 수렴 시간이 길고 카운트-투-인피니티(count-to-infinity) 문제 존재
+### Bellman-Ford Algorithm (Distance Vector Routing)
+- Each node receives distance information from neighboring nodes
+- Updates routing table when discovering new paths
+- Has long convergence time and count-to-infinity problem
 
-### 주요 라우팅 프로토콜 (Major Routing Protocols)
+### Major Routing Protocols
 
 #### BGP (Border Gateway Protocol)
-- **특징**: AS(Autonomous System) 간 라우팅을 위한 경로 벡터(path vector) 프로토콜
-- **동작 레이어**: 애플리케이션 계층에서 동작 (TCP 포트 179 사용)
-- **메시지 타입**: OPEN, UPDATE, KEEPALIVE, NOTIFICATION
-- **라우팅 결정 기준**: 경로 속성(AS path, origin, next hop 등)과 정책 기반
-- **용도**: 인터넷 백본 라우터 간 라우팅 (예: ISP 간 연결)
+- **Characteristics**: Path vector protocol for inter-AS routing
+- **Operating layer**: Application layer (TCP port 179)
+- **Message types**: OPEN, UPDATE, KEEPALIVE, NOTIFICATION
+- **Routing criteria**: Path attributes (AS path, origin, next hop) and policies
+- **Usage**: Internet backbone router connections (e.g., between ISPs)
 
 #### OSPF (Open Shortest Path First)
-- **특징**: 링크 상태(link state) 라우팅 프로토콜, 다익스트라 알고리즘 사용
-- **동작 레이어**: 네트워크 계층에서 직접 동작 (IP 프로토콜 89 사용)
-- **영역 개념**: 계층적 라우팅을 위한 area 개념 사용
-- **메트릭**: 대역폭 기반 코스트 사용
-- **용도**: 기업 내부 네트워크와 같은 중대형 네트워크의 내부 라우팅
-- **헬로 패킷**: 이웃 관계 유지를 위해 주기적으로 전송 (기본 10초)
+- **Characteristics**: Link state routing protocol using Dijkstra's algorithm
+- **Operating layer**: Network layer (IP protocol 89)
+- **Area concept**: Uses areas for hierarchical routing
+- **Metric**: Bandwidth-based cost
+- **Usage**: Internal routing in medium to large enterprise networks
+- **Hello packets**: Sent periodically to maintain neighbor relationships (default 10 seconds)
 
 #### RIP (Routing Information Protocol)
-- **특징**: 거리 벡터(distance vector) 라우팅 프로토콜, 벨만-포드 알고리즘 사용
-- **동작 레이어**: 애플리케이션 계층에서 동작 (UDP 포트 520 사용)
-- **메트릭**: 홉 카운트(hop count)만 사용, 최대 15 홉 (16은 무한대로 간주)
-- **타이머**: 업데이트(30초), 무효화(180초), 플러시(240초)
-- **용도**: 소규모 네트워크의 내부 라우팅
-- **단점**: 대규모 네트워크에서 느린 수렴, 카운트-투-인피니티 문제
+- **Characteristics**: Distance vector protocol using Bellman-Ford algorithm
+- **Operating layer**: Application layer (UDP port 520)
+- **Metric**: Hop count only, maximum 15 hops (16 considered infinity)
+- **Timers**: Update (30s), Invalidation (180s), Flush (240s)
+- **Usage**: Internal routing in small networks
+- **Disadvantages**: Slow convergence in large networks, count-to-infinity problem
 
-### 라우팅 테이블 해석 (Routing Table Interpretation)
-- 목적지 네트워크/호스트(destination network/host)
-- 넥스트 홉 라우터(next hop router)
-- 인터페이스(interface)
-- 메트릭(metric)
+### Routing Table Interpretation
+- Destination network/host
+- Next hop router
+- Interface
+- Metric
 
-## 10. ARP, DNS, DHCP 프로토콜 (ARP, DNS, DHCP Protocols)
+## 10. ARP, DNS, DHCP Protocols
 
 ### ARP (Address Resolution Protocol)
-- IP 주소를 MAC 주소로 변환
-- 작동 방식:
-  1. ARP 요청 브로드캐스트(ARP request broadcast) (대상 IP, 송신자 MAC)
-  2. 해당 IP 소유자만 ARP 응답 유니캐스트(ARP reply unicast) (자신의 MAC 포함)
-  3. ARP 캐시(ARP cache)에 매핑 저장
+- Converts IP addresses to MAC addresses
+- Operation:
+  1. ARP request broadcast (Target IP, Sender MAC)
+  2. Only IP owner sends ARP reply unicast (including its MAC)
+  3. Mapping stored in ARP cache
 
 ### DNS (Domain Name System)
-- 도메인 이름을 IP 주소로 변환
-- 계층적 분산 데이터베이스(hierarchical distributed database)
-- 작동 방식:
-  1. 클라이언트 요청(client request)
-  2. 로컬 DNS 서버 검색(local DNS server lookup)
-  3. 루트(root) → TLD(Top-Level Domain) → 권한 있는 서버(authoritative server) 순차 쿼리
+- Converts domain names to IP addresses
+- Hierarchical distributed database
+- Operation:
+  1. Client request
+  2. Local DNS server lookup
+  3. Sequential queries: Root → TLD → Authoritative server
 
 ### DHCP (Dynamic Host Configuration Protocol)
-- 자동으로 IP 주소 할당
-- 작동 방식:
-  1. DISCOVER (브로드캐스트)
-  2. OFFER (서버 응답)
-  3. REQUEST (클라이언트 선택)
-  4. ACK (서버 확인)
+- Automatically assigns IP addresses
+- Operation:
+  1. DISCOVER (broadcast)
+  2. OFFER (server response)
+  3. REQUEST (client selection)
+  4. ACK (server confirmation)
 
-## 11. 패킷 단편화(IP Fragmentation)
+## 11. IP Fragmentation
 
-### IP 단편화 (IP Fragmentation)
-- MTU(Maximum Transmission Unit)보다 큰 패킷을 분할
-- 계산식: 단편 수 = ⌈(원본 크기 - 헤더 크기) / (MTU - 헤더 크기)⌉
+### IP Fragmentation Process
+- Divides packets larger than MTU (Maximum Transmission Unit)
+- Formula: Fragment count = ⌈(Original size - Header size) / (MTU - Header size)⌉
 
-### 단편화 필드 (Fragmentation Fields)
-- **Identification**: 원본 패킷 식별
-- **DF(Don't Fragment)**: 단편화 금지
-- **MF(More Fragments)**: 추가 단편 여부
-- **Fragment Offset**: 원본 데이터에서의 위치 (8바이트 단위)
+### Fragmentation Fields
+- **Identification**: Identifies original packet
+- **DF (Don't Fragment)**: Prohibits fragmentation
+- **MF (More Fragments)**: Indicates additional fragments
+- **Fragment Offset**: Position in original data (8-byte units)
 
-### 단편화 처리 (Fragmentation Process)
-1. 원본 패킷 크기와 MTU 비교
-2. 필요 단편 수 계산
-3. 각 단편의 오프셋 계산
-4. 마지막 단편을 제외한 모든 단편의 MF 플래그 설정
-5. 모든 단편에 동일한 ID 할당
+### Fragmentation Process Steps
+1. Compare original packet size with MTU
+2. Calculate required fragment count
+3. Calculate offset for each fragment
+4. Set MF flag for all fragments except the last
+5. Assign same ID to all fragments
 
-## 12. TCP/IP 네트워크 통신 단계 (TCP/IP Network Communication Steps)
+## 12. TCP/IP Network Communication Steps
 
-### 웹 페이지 로딩 과정 (Web Page Loading Process)
-1. **ARP**: 게이트웨이 MAC 주소 확인
-2. **DNS**: 웹 서버 IP 주소 조회
-3. **TCP**: 3-way 핸드셰이크로 연결 설정
-4. **HTTP**: 요청 전송 및 응답 수신
-5. **TCP**: 연결 종료
+### Web Page Loading Process
+1. **ARP**: Determine gateway MAC address
+2. **DNS**: Look up web server IP address
+3. **TCP**: Establish connection via 3-way handshake
+4. **HTTP**: Send request and receive response
+5. **TCP**: Terminate connection
 
 ### NAT (Network Address Translation)
-- 사설 IP를 공인 IP로 변환
-- 작동 방식:
-  1. 내부→외부: 소스 IP, 포트 변환 및 매핑 테이블 생성
-  2. 외부→내부: 매핑 테이블 참조하여 목적지 IP, 포트 변환 
+- Converts private IPs to public IPs
+- Operation:
+  1. Internal→External: Transform source IP/port and create mapping table
+  2. External→Internal: Reference mapping table to transform destination IP/port 
